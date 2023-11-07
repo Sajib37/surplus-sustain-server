@@ -7,8 +7,8 @@ require('dotenv').config();
 
 
 // middleWares
-// app.use(cors)
-// app.use(express.json())
+app.use(cors())
+app.use(express.json())
 
 
 // Api
@@ -35,7 +35,15 @@ async function run() {
       
       await client.connect();
       
+      const availableFoodCollection = client.db("surplus-sustain").collection("availableFood")
       
+      app.post('/availableFood', async(req, res) => {
+        const newFood = req.body;
+        console.log(newFood)
+        const result = await availableFoodCollection.insertOne(newFood);
+        res.send(result)
+      })
+
 
       
     
