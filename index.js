@@ -40,7 +40,7 @@ async function run() {
       // Post new food
       app.post('/availableFood', async(req, res) => {
         const newFood = req.body;
-        console.log(newFood)
+        // console.log(newFood)
         const result = await availableFoodCollection.insertOne(newFood);
         res.send(result)
       })
@@ -58,6 +58,15 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await availableFoodCollection.find(query).toArray();
+        res.send(result);
+      })
+
+      // post the request in the new collection
+      const requestCollection = client.db("surplus-sustain").collection("requests")
+      app.post('/requestFood', async (req, res) => {
+        const newRequest = req.body;
+        console.log(newRequest)
+        const result = await requestCollection.insertOne(newRequest);
         res.send(result);
       })
 
