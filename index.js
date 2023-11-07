@@ -37,10 +37,18 @@ async function run() {
       
       const availableFoodCollection = client.db("surplus-sustain").collection("availableFood")
       
+      // Post new food
       app.post('/availableFood', async(req, res) => {
         const newFood = req.body;
         console.log(newFood)
         const result = await availableFoodCollection.insertOne(newFood);
+        res.send(result)
+      })
+
+      // Get all available food
+      app.get('/availableFood',async (req, res) => {
+        const cursor = availableFoodCollection.find();
+        const result = await cursor.toArray()
         res.send(result)
       })
 
