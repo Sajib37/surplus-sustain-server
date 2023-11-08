@@ -70,6 +70,15 @@ async function run() {
         res.send(result);
       })
 
+      // get food by filtering by gmail
+      app.get('/manageFood/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { donorEmail: { $regex: new RegExp(email, 'i') } };
+        const cursor = availableFoodCollection.find(query)
+        const result = await cursor.toArray();
+        res.send(result);
+      })
+
 
       
     
