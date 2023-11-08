@@ -89,6 +89,40 @@ async function run() {
         res.send(result);
       })
 
+      // get a specific food for update
+
+      app.get('/food/get/:id', async(req, res) =>{
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await availableFoodCollection.find(query).toArray();
+        res.send(result)
+      })
+
+      // update a specific food info
+      app.put('/food/update/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) }
+        const option = { upsert: true }
+        const updateFood = req.body;
+        console.log(updateFood)
+
+        const food = {
+          $set: {
+
+              name: updateFood.name,
+              quantity: updateFood.quantity,
+              expireDate: updateFood.expireDate,
+              location: updateFood.location,
+              notes: updateFood.notes,
+              status: updateFood.status,
+          }
+        }
+
+        const result = await availableFoodCollection.updateOne(filter, food, option)
+        res.send(result)
+
+      })
+      
 
       
     
