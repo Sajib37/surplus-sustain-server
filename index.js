@@ -46,11 +46,13 @@ async function run() {
       })
 
       // Get all available food
-      app.get('/availableFood',async (req, res) => {
-        const cursor = availableFoodCollection.find();
-        const result = await cursor.toArray()
-        res.send(result)
-      })
+      app.get('/availableFood', async (req, res) => {
+        const query = { status: { $ne: 'Delivered' } }; 
+        const cursor = availableFoodCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+    });
+
 
       // get the food by specific id
 
@@ -89,14 +91,14 @@ async function run() {
         res.send(result);
       })
 
-      // get a specific food for update
+      // // get a specific food for update
 
-      app.get('/food/get/:id', async(req, res) =>{
-        const id = req.params.id;
-        const query = { _id: new ObjectId(id) }
-        const result = await availableFoodCollection.find(query).toArray();
-        res.send(result)
-      })
+      // app.get('/food/get/:id', async(req, res) =>{
+      //   const id = req.params.id;
+      //   const query = { _id: new ObjectId(id) }
+      //   const result = await availableFoodCollection.find(query).toArray();
+      //   res.send(result)
+      // })
 
       // update a specific food info
       app.put('/food/update/:id', async (req, res) => {
@@ -104,7 +106,6 @@ async function run() {
         const filter = { _id: new ObjectId(id) }
         const option = { upsert: true }
         const updateFood = req.body;
-        console.log(updateFood)
 
         const food = {
           $set: {
@@ -115,12 +116,22 @@ async function run() {
               location: updateFood.location,
               notes: updateFood.notes,
               status: updateFood.status,
+              image: updateFood.image
           }
         }
-
         const result = await availableFoodCollection.updateOne(filter, food, option)
         res.send(result)
 
+      })
+
+
+      // get a food request by specific id
+
+      app.get('/food/request/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { foodID: { $regex: new RegExp(id, 'i') } };
+        const result = await requestCollection.find(query).toArray();
+        res.send(result)
       })
       
 
