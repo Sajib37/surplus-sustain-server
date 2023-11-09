@@ -87,18 +87,16 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) }
         const result = await availableFoodCollection.deleteOne(query)
-        console.log(id)
         res.send(result);
       })
 
-      // // get a specific food for update
-
-      // app.get('/food/get/:id', async(req, res) =>{
-      //   const id = req.params.id;
-      //   const query = { _id: new ObjectId(id) }
-      //   const result = await availableFoodCollection.find(query).toArray();
-      //   res.send(result)
-      // })
+      // requested deleted by id 
+      app.delete('/request/delet/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await requestCollection.deleteOne(query)
+        res.send(result);
+      })
 
       // update a specific food info
       app.put('/food/update/:id', async (req, res) => {
@@ -134,6 +132,14 @@ async function run() {
         res.send(result)
       })
       
+      // get food request filtering by gmail
+      app.get('/food/request/email/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { userEmail: { $regex: new RegExp(email, 'i') } };
+        const cursor = requestCollection.find(query)
+        const result = await cursor.toArray();
+        res.send(result);
+      })
 
       
     
